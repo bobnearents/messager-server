@@ -1,0 +1,4 @@
+ALTER TABLE messages
+DROP COLUMN IF EXISTS room_id;
+
+DROP TABLE IF EXISTS rooms;

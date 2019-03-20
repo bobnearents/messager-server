@@ -7,8 +7,12 @@
     "test": "mocha --require test/setup.js",
     "dev": "nodemon src/server.js",
     "migrate": "postgrator --config postgrator-config.js",
+    "migrate-production": "postgrator --config postgrator-production-config.js",
     "start": "node src/server.js",
-    "predeploy": "npm audit",
+    "preseed": "psql -d messager-aim -f ./seeds/seed.users.sql ",
+    "seed": "psql -d messager-aim -f ./seeds/seed.rooms.sql ",
+    "postseed": "psql -d messager-aim -f ./seeds/seed.messages.sql ",
+    "predeploy": "npm audit && npm run migrate-production",
     "deploy": "git push heroku master"
   },
   "keywords": [],

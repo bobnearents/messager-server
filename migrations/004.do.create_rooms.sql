@@ -1,0 +1,9 @@
+CREATE TABLE rooms (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  date_created TIMESTAMP DEFAULT now() NOT NULL
+);
+
+ALTER TABLE messages
+  ADD COLUMN room_id INTEGER NOT NULL
+    REFERENCES rooms(id);

@@ -1,6 +1,5 @@
 'use strict';
 
-const path = require('path');
 const express = require('express');
 const messagesService = require('./messages-service');
 const { requireAuth } = require('../middleware/basic-auth');
@@ -14,7 +13,7 @@ messsagesRouter
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     messagesService
-      .getAllMessagers(knexInstance)
+      .getAllMessages(knexInstance)
       .then(messages => {
         res.json(messages);
       })
@@ -22,8 +21,8 @@ messsagesRouter
   })
 
   .post(requireAuth, jsonParser, (req, res, next) => {
-    const { content } = req.body;
-    const newMessage = { content, user_id: req.user.id };
+    const { content, room_id } = req.body;
+    const newMessage = { content, room_id, user_id: req.user.id };
     messagesService
       .insertMessage(req.app.get('db'), newMessage)
       .then(message => {
@@ -44,4 +43,29 @@ messsagesRouter
       })
       .catch(next);
   });
+
+messsagesRouter
+  .route('/rooms')
+
+  .get((req, res, next) => {
+    const knexInstance = req.app.get('db');
+    messagesService
+      .getAllRooms(knexInstance)
+      .then(rooms => {
+        res.json(rooms);
+      })
+      .catch(next);
+  })
+
+  .post(requireAuth, jsonParser, (req, res, next) => {
+    const { name } = req.body;
+    const newRoom = { name };
+    messagesService
+      .createRoom(req.app.get('db'), newRoom)
+      .then(room => {
+        res.status(201).json(room);
+      })
+      .catch(next);
+  });
+  
 module.exports = messsagesRouter;

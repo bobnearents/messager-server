@@ -1,3 +1,3 @@
 ALTER TABLE messages
-  ADD COLUMN user_id INTEGER
+  ADD COLUMN user_id INTEGER NOT NULL
     REFERENCES users(id);
