@@ -2,14 +2,13 @@
 
 const express = require('express');
 const messagesService = require('./messages-service');
-const { requireAuth } = require('../middleware/basic-auth');
+const { requireAuth } = require('../middleware/jwt-auth');
 
 const messsagesRouter = express.Router();
 const jsonParser = express.json();
 
 messsagesRouter
   .route('/messages')
-
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     messagesService
@@ -26,7 +25,7 @@ messsagesRouter
     messagesService
       .insertMessage(req.app.get('db'), newMessage)
       .then(message => {
-        res.status(201).json(message);
+        res.status(201).json(messagesService.serializeMessage(message));
       })
       .catch(next);
   });
@@ -35,18 +34,38 @@ messsagesRouter
 
   .post(jsonParser, (req, res, next) => {
     const { username, password, full_name, nickname } = req.body;
-    const newUser = { username, password, full_name, nickname };
-    messagesService
-      .addUser(req.app.get('db'), newUser)
-      .then(user => {
-        res.status(201).json(user);
+    const passwordError = messagesService.validatePassword(password);
+
+    if (passwordError) return res.status(400).json({ error: passwordError });
+    messagesService.hasUserWithUserName(
+      req.app.get('db'),
+      username
+    )
+      .then(hasUserWithUserName => {
+        if (hasUserWithUserName){
+          return res.status(400).json({ error: 'Username already taken' });
+        }
+        return messagesService.hashPassword(password)
+          .then(hashedPassword => {
+            const newUser = {
+              username,
+              password: hashedPassword,
+              full_name,
+              nickname
+            };
+            return messagesService
+              .addUser(req.app.get('db'), newUser)
+              .then(user => {
+                res.status(201).json(messagesService.serializeUser(user));
+              })
+              .catch(next);
+          });
       })
       .catch(next);
   });
 
 messsagesRouter
   .route('/rooms')
-
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
     messagesService
@@ -67,5 +86,5 @@ messsagesRouter
       })
       .catch(next);
   });
-  
+
 module.exports = messsagesRouter;

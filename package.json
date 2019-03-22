@@ -12,6 +12,9 @@
     "preseed": "psql -d messager-aim -f ./seeds/seed.users.sql ",
     "seed": "psql -d messager-aim -f ./seeds/seed.rooms.sql ",
     "postseed": "psql -d messager-aim -f ./seeds/seed.messages.sql ",
+    "prerefresh": "npm run migrate 0",
+    "refresh": "npm run migrate",
+    "postrefresh":"npm run seed",
     "predeploy": "npm audit && npm run migrate-production",
     "deploy": "git push heroku master"
   },
@@ -19,10 +22,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "helmet": "^3.15.1",
+    "jsonwebtoken": "^8.5.1",
     "knex": "^0.16.3",
     "morgan": "^1.9.1",
     "pg": "^7.8.1",
