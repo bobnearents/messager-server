@@ -1,6 +1,6 @@
 CREATE TABLE rooms (
   id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL,
+  name TEXT NOT NULL UNIQUE,
   date_created TIMESTAMP DEFAULT now() NOT NULL
 );
 
