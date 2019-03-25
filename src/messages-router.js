@@ -8,11 +8,12 @@ const messsagesRouter = express.Router();
 const jsonParser = express.json();
 
 messsagesRouter
-  .route('/messages')
+  .route('/messages/:room_id')
   .get((req, res, next) => {
     const knexInstance = req.app.get('db');
+    const {room_id} = req.params;
     messagesService
-      .getAllMessages(knexInstance)
+      .getAllMessages(knexInstance, room_id)
       .then(messages => {
         res.json(messages);
       })

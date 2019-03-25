@@ -4,11 +4,11 @@ const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*
 const xss = require('xss');
 const bcrypt = require('bcryptjs');
 const messagesService = {
-  getAllMessages(knex) {
+  getAllMessages(knex, room_id) {
     return knex
       .select('messages.*', 'users.nickname')
       .from('messages')
-      //.where({room_id:1})
+      .where({room_id})
       .leftJoin('users', 'users.id', 'messages.user_id');
   },
 
