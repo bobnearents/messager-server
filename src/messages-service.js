@@ -6,9 +6,10 @@ const bcrypt = require('bcryptjs');
 const messagesService = {
   getAllMessages(knex, room_id) {
     return knex
-      .select('messages.*', 'users.nickname')
+      .select('messages.*', 'users.nickname', 'users.username')
       .from('messages')
       .where({room_id})
+      .orderBy('date_created')
       .leftJoin('users', 'users.id', 'messages.user_id');
   },
 
