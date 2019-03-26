@@ -9,7 +9,7 @@ const messagesService = {
       .select('messages.*', 'users.nickname', 'users.username')
       .from('messages')
       .where({room_id})
-      .orderBy('date_created')
+      .orderBy('date_created', 'desc')
       .leftJoin('users', 'users.id', 'messages.user_id');
   },
 
