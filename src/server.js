@@ -2,6 +2,7 @@
 
 const knex = require('knex');
 const app = require('./app');
+const socket = require('socket.io');
 const { PORT, DB_URL } = require('./config');
 
 const db = knex({
@@ -10,7 +11,13 @@ const db = knex({
 });
 
 app.set('db', db); 
-
-app.listen(PORT, () => {
+const httpServer = app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
+});
+
+const io = socket(httpServer);
+app.set('io', io);
+
+io.on('connection', function (socket) {
+  console.log('an user connected');
 });

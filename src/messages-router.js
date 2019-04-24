@@ -26,6 +26,7 @@ messsagesRouter
     messagesService
       .insertMessage(req.app.get('db'), newMessage)
       .then(message => {
+        req.app.get('io').emit('new message', message.room_id);
         res.status(201).json(messagesService.serializeMessage(message));
       })
       .catch(next);
@@ -72,6 +73,7 @@ messsagesRouter
     messagesService
       .getAllRooms(knexInstance)
       .then(rooms => {
+        
         res.json(rooms);
       })
       .catch(next);
@@ -83,6 +85,7 @@ messsagesRouter
     messagesService
       .createRoom(req.app.get('db'), newRoom)
       .then(room => {
+        req.app.get('io').emit('new room', room.id);
         res.status(201).json(room);
       })
       .catch(next);

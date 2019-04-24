@@ -19,7 +19,7 @@
     "postseed": "psql -d messager-aim -f ./seeds/seed.messages.sql ",
     "prerefresh": "npm run migrate 0",
     "refresh": "npm run migrate",
-    "postrefresh":"npm run seed",
+    "postrefresh": "npm run seed",
     "predeploy": "npm audit && npm run migrate-production",
     "deploy": "git push heroku master"
   },
